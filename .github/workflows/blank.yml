@@ -1,0 +1,37 @@
+name: Deploy Proxy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Read configuration file
+        id: read-config
+        run: |
+          echo "::set-output name=org::$(jq -r '.org' config/config.json)"
+          echo "::set-output name=env::$(jq -r '.env' config/config.json)"
+          echo "::set-output name=proxy::$(jq -r '.proxy' config/config.json)"
+          echo "::set-output name=revision::$(jq -r '.revision' config/config.json)"
+          echo "::set-output name=auth::$(jq -r '.auth' config/config.json)"
+          echo "::set-output name=content_type::$(jq -r '.content_type' config/config.json)"
+
+      - name: Deploy Proxy
+        run: |
+          # Use the extracted parameters for deployment
+          echo "Deploying ${{ steps.read-config.outputs.proxy }} revision ${{ steps.read-config.outputs.revision }} to ${{ steps.read-config.outputs.env }} environment..."
+
+          # Make a POST request to deploy the API proxy
+          curl --request POST \
+            "https://api.enterprise.apigee.com/v1/organizations/${{ steps.read-config.outputs.org }}/environments/${{ steps.read-config.outputs.env }}/apis/${{ steps.read-config.outputs.proxy }}/revisions/${{ steps.read-config.outputs.revision }}/deployments" \
+            --header "Authorization: Basic ${{ steps.read-config.outputs.auth }}" \
+            --header "Content-Type: ${{ steps.read-config.outputs.content_type }}" \
+            --header "Accept: application/json" \
+            --data '{}'
