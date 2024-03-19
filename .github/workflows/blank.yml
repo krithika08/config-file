@@ -16,36 +16,19 @@ jobs:
       - name: Load configuration file
         id: load_config
         run: |
-          echo "::set-output name=config::$(cat deploy_config.json)"
+          CONFIG=$(cat deploy_config.json)
+          echo "Configuration: $CONFIG"
+          echo "::set-output name=config::$CONFIG"
 
       - name: Deploy Proxy
         run: |
-          # Extracting configuration from the output of the previous step
-          # Extracting configuration from the output of the previous step
-CONFIG=$(cat deploy_config.json)
+          CONFIG="${{ steps.load_config.outputs.config }}"
+          PROXY_NAME=$(echo "$CONFIG" | jq -r '.proxy')
+          REVISION=$(echo "$CONFIG" | jq -r '.revision')
+          ENVIRONMENT=$(echo "$CONFIG" | jq -r '.env')
+          ORGANIZATION="zebra-prod"  # Replace 'your_organization_name' with the actual organization name
 
-# Printing configuration for verification
-echo "Configuration: $CONFIG"
-
-# Extracting proxy name, revision, environment, and organization from configuration
-PROXY_NAME=$(echo "$CONFIG" | jq -r '.proxy')
-REVISION=$(echo "$CONFIG" | jq -r '.revision')
-ENVIRONMENT=$(echo "$CONFIG" | jq -r '.env')
-ORGANIZATION="zebra-prod"  # Replace 'your_organization_name' with the actual organization name
-
-# Making POST request to deploy proxy
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d "{\"override\": true}" \
-  "https://api.enterprise.apigee.com/v1/organizations/${ORGANIZATION}/environments/${ENVIRONMENT}/apis/${PROXY_NAME}/revisions/${REVISION}/deployments"
-
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: deployment
-          title: "Deploy Proxy ${PROXY_NAME} to ${ENVIRONMENT}"
-          body: |
-            This pull request automates the deployment of proxy ${PROXY_NAME} to the ${ENVIRONMENT} environment.
-          labels: deploy
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"override\": true}" \
+            "https://api.enterprise.apigee.com/v1/organizations/${ORGANIZATION}/environments/${ENVIRONMENT}/apis/${PROXY_NAME}/revisions/${REVISION}/deployments"
