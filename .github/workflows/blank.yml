@@ -22,12 +22,12 @@ jobs:
 
       - name: Deploy Proxy
         run: |
-          CONFIG="${{ steps.load_config.outputs.config }}"
+          CONFIG=$(echo "${{ steps.load_config.outputs.config }}")
           PROXY_NAME=$(echo "$CONFIG" | jq -r '.proxy')
           REVISION=$(echo "$CONFIG" | jq -r '.revision')
           ENVIRONMENT=$(echo "$CONFIG" | jq -r '.env')
           ORGANIZATION="zebra-prod"  # Replace 'your_organization_name' with the actual organization name
-
+      
           curl -X POST \
             -H "Content-Type: application/json" \
             -d "{\"override\": true}" \
