@@ -1,5 +1,8 @@
 {
   "proxy": "Savanna-API-Apigee-FinOps",
   "revision": "1",
-  "env": "stage"
+  "kvm": "",
+  "env": "stage",
+  "targetName": "",
+  "targetUrl": ""
 }
