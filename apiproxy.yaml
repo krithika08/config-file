@@ -2,7 +2,7 @@
 
 proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
 revision: "1"  # Specific revision to deploy (optional)
-target_env: "stage"  
+env: "stage"  
 
 
 # kvm: ""  
