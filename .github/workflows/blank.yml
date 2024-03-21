@@ -1,34 +1,40 @@
-name: Deploy Proxy
+# .github/workflows/apiproxy-deploy.yml
+
+name: Deploy ApiProxy
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'apiproxy.yaml'  # Trigger workflow only on changes to this file
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Load configuration file
-        id: load_config
+      # Read details from the config file
+      - name: Read ApiProxy Details
         run: |
-          CONFIG=$(cat deploy_config.json)
-          echo "Configuration: $CONFIG"
-          echo "::set-output name=config::$CONFIG"
+          API_NAME=$(yq .proxy apiproxy.yaml)
+          REVISION=$(yq .revision apiproxy.yaml)
+          TARGET_ENV=$(yq .env apiproxy.yaml)
+          # ... (optional: extract kvm, targetName, targetUrl if needed)
 
-      - name: Deploy Proxy
-        run: |
-          CONFIG=$(echo "${{ steps.load_config.outputs.config }}")
-          PROXY_NAME=$(echo "$CONFIG" | jq -r '.proxy')
-          REVISION=$(echo "$CONFIG" | jq -r '.revision')
-          ENVIRONMENT=$(echo "$CONFIG" | jq -r '.env')
-          ORGANIZATION="zebra-prod"  # Replace 'your_organization_name' with the actual organization name
       
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{\"override\": true}" \
-            "https://api.enterprise.apigee.com/v1/organizations/${ORGANIZATION}/environments/${ENVIRONMENT}/apis/${PROXY_NAME}/revisions/${REVISION}/deployments"
+      # Build the deployment URL dynamically
+      - name: Build Deployment URL
+        run: |
+          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
+
+      # Deploy the API Proxy using curl (replace with your actual script)
+      - name: Deploy ApiProxy
+        run: |
+          curl --request POST \
+               "$DEPLOY_URL" \
+               --header "Authorization: ${{ secrets.BEARER_TOKEN }}" \
+               --header 'Accept: application/json' \
+               --compressed
+
+     
