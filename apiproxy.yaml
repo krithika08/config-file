@@ -1,7 +1,8 @@
 
 proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
 revision: "1" 
-#env: "stage"  
+env: "stage"  
+org: "zebra-prod"
 
 
 # kvm: ""  
