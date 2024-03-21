@@ -1,5 +1,4 @@
-
-proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
+proxy: "Savanna-API-Apigee-FinOps"  
 revision: "1" 
 env: "stage"  
 org: "zebra-prod"
