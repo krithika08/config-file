@@ -5,34 +5,40 @@ name: Deploy ApiProxy
 on:
   push:
     paths:
-      - 'apiproxy.yaml'  # Trigger workflow only on changes to this file
+      - 'apiproxy.yaml'  # This workflow triggers on changes to the apiproxy.yaml file
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Specifies the runner environment
 
     steps:
       - uses: actions/checkout@v3
+        # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
 
-      # Read details from the config file
+      - name: Install yq
+        # Installs yq to parse YAML files. Adjust the version as necessary.
+        run: sudo snap install yq
+
       - name: Read ApiProxy Details
+        # Parses the apiproxy.yaml file for required details
         run: |
           API_NAME=$(yq e '.proxy' apiproxy.yaml)
           REVISION=$(yq e '.revision' apiproxy.yaml)
           TARGET_ENV=$(yq e '.env' apiproxy.yaml)
-          ORGANIZATION=$(yq e '.org' apiproxy.yaml)
+          echo "API_NAME=${API_NAME}" >> $GITHUB_ENV
+          echo "REVISION=${REVISION}" >> $GITHUB_ENV
+          echo "TARGET_ENV=${TARGET_ENV}" >> $GITHUB_ENV
           
-
-      
-      # Build the deployment URL dynamically
       - name: Build Deployment URL
+        # Dynamically constructs the deployment URL
         run: |
-          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/$ORGANIZATION/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
-          echo "Deployment URL: $DEPLOY_URL"
-      # Deploy the API Proxy using curl
+          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
+          echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_ENV
+
       - name: Deploy ApiProxy
+        # Deploys the API proxy using the constructed URL and Authorization header
         run: |
-          curl --request POST "https://api.enterprise.apigee.com/v1/organizations/$ORGANIZATION/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments" \
+          curl --request POST "$DEPLOY_URL" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" \
             --header 'Accept: application/json' \
             --compressed
