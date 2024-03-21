@@ -1,4 +1,4 @@
-# apiproxy.yaml
+
 
 proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
 revision: "1" 
