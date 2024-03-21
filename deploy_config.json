@@ -1,8 +1,10 @@
-{
-  "proxy": "Savanna-API-Apigee-FinOps",
-  "revision": "1",
-  "kvm": "",
-  "env": "stage",
-  "targetName": "",
-  "targetUrl": ""
-}
+# apiproxy.yaml
+
+proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
+revision: "1"  # Specific revision to deploy (optional)
+env: "stage"  # Target environment for deployment (e.g., prod, test)
+
+# Optional fields (uncomment and modify if needed)
+# kvm: ""  
+# targetName: ""  # (meaning unclear, adjust based on your environment)
+# targetUrl: ""  # (meaning unclear, adjust based on your environment)
