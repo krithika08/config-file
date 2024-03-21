@@ -31,10 +31,6 @@ jobs:
       # Deploy the API Proxy using curl (replace with your actual script)
       - name: Deploy ApiProxy
         run: |
-          curl --request POST \
-               "$DEPLOY_URL" \
-               --header "Authorization: ${{ secrets.BEARER_TOKEN }}" \
-               --header 'Accept: application/json' \
-               --compressed
+          curl --request POST \"$DEPLOY_URL" \--header "Authorization: ${{ secrets.BEARER_TOKEN }}" \--header 'Accept: application/json' \--compressed
 
      
