@@ -1,7 +1,7 @@
 # apiproxy.yaml
 
 proxy: "Savanna-API-Apigee-FinOps"  # Name of your API Proxy
-revision: "1"  # Specific revision to deploy (optional)
+revision: "1" 
 env: "stage"  
 
 
