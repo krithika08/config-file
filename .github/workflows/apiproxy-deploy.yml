@@ -28,7 +28,7 @@ jobs:
       - name: Build Deployment URL
         run: |
           DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/$ORGANIZATION/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
-          
+          echo "Deployment URL: $DEPLOY_URL"
       # Deploy the API Proxy using curl
       - name: Deploy ApiProxy
         run: |
