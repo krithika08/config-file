@@ -26,7 +26,7 @@ jobs:
       # Build the deployment URL dynamically
       - name: Build Deployment URL
         run: |
-          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/stage/apis/$API_NAME/revisions/$REVISION/deployments"
+          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
           
       # Deploy the API Proxy using curl
       - name: Deploy ApiProxy
