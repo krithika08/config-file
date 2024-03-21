@@ -20,18 +20,19 @@ jobs:
           API_NAME=$(yq e '.proxy' apiproxy.yaml)
           REVISION=$(yq e '.revision' apiproxy.yaml)
           TARGET_ENV=$(yq e '.env' apiproxy.yaml)
+          ORGANIZATION=$(yq e '.org' apiproxy.yaml)
           
 
       
       # Build the deployment URL dynamically
       - name: Build Deployment URL
         run: |
-          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
+          DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/$ORGANIZATION/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
           
       # Deploy the API Proxy using curl
       - name: Deploy ApiProxy
         run: |
-          curl --request POST "https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments" \
+          curl --request POST "https://api.enterprise.apigee.com/v1/organizations/$ORGANIZATION/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" \
             --header 'Accept: application/json' \
             --compressed
