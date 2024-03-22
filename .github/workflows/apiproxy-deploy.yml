@@ -1,5 +1,3 @@
-# .github/workflows/apiproxy-deploy.yml
-
 name: Deploy ApiProxy
 
 on:
@@ -9,18 +7,17 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Specifies the runner environment
-
+    runs-on: ubuntu-latest  
     steps:
       - uses: actions/checkout@v3
-        # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
+        # Checks out your repository under $GITHUB_WORKSPACE, so our job can access it
 
       - name: Install yq
-        # Installs yq to parse YAML files. Adjust the version as necessary.
+        # Installs yq to parse YAML files. 
         run: sudo snap install yq
 
       - name: Read ApiProxy Details
-        # Parses the apiproxy.yaml file for required details
+        
         run: |
           API_NAME=$(yq e '.proxy' apiproxy.yaml)
           REVISION=$(yq e '.revision' apiproxy.yaml)
@@ -30,13 +27,13 @@ jobs:
           echo "TARGET_ENV=${TARGET_ENV}" >> $GITHUB_ENV
           
       - name: Build Deployment URL
-        # Dynamically constructs the deployment URL
+        
         run: |
           DEPLOY_URL="https://api.enterprise.apigee.com/v1/organizations/zebra-prod/environments/$TARGET_ENV/apis/$API_NAME/revisions/$REVISION/deployments"
           echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_ENV
 
       - name: Deploy ApiProxy
-        # Deploys the API proxy using the constructed URL and Authorization header
+        
         run: |
           curl --request POST "$DEPLOY_URL" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}" \
