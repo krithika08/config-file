@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'apiproxy.yaml'  # This workflow triggers on changes to the apiproxy.yaml file
+  pull_request:
+    paths:
+      - 'apiproxy.yaml'  # Trigger workflow when a pull request modifies this file
 
 jobs:
   deploy:
