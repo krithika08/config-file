@@ -33,8 +33,4 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}"
 
 
-      - name: Upload Proxy Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: proxy-artifact
-          path: ${{ steps.export_proxy.outputs.artifact_path }}
+      
