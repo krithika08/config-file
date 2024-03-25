@@ -1,0 +1,33 @@
+# .github/workflows/export-proxy.yml
+
+name: Export Proxy
+
+on:
+  pull_request:
+    paths:
+      - 'apiproxy.yaml'
+
+jobs:
+  export_proxy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Read Proxy Details
+        run: |
+          API_NAME=$(yq e '.proxy' apiproxy.yaml)
+          REVISION=$(yq e '.revision' apiproxy.yaml)
+          echo "API_NAME=${API_NAME}" >> $GITHUB_ENV
+          echo "REVISION=${REVISION}" >> $GITHUB_ENV
+
+      - name: Export Proxy
+        run: |
+          # Export the API proxy revision as a zip file
+          curl -o proxy-config.zip \
+            "https://api.enterprise.apigee.com/v1/organizations/{org_name}/apis/${API_NAME}/revisions/${REVISION}?format=bundle" \
+            --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}"
+
+          # Provide feedback or perform additional actions as needed
+          echo "Proxy configuration exported for API: $API_NAME, Revision: $REVISION"
