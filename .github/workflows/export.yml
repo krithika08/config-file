@@ -32,16 +32,6 @@ jobs:
             "https://api.enterprise.apigee.com/v1/organizations/{org_name}/apis/${API_NAME}/revisions/${REVISION}?format=bundle" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}"
 
-          # Upload the exported proxy as an artifact
-          echo "##[group]Exported Proxy"
-          echo "Exported proxy configuration for API: $API_NAME, Revision: $REVISION"
-          echo "##[endgroup]"
-          echo "Uploading proxy-config.zip as artifact..."
-          echo "::set-output name=proxy-zip::proxy-config.zip"
-          echo "::set-output name=proxy-name::$API_NAME"
-          echo "::set-output name=proxy-revision::$REVISION"
-          echo "::set-output name=artifact_path::proxy-config.zip"
-          echo "::add-path::proxy-config.zip"
 
       - name: Upload Proxy Artifact
         uses: actions/upload-artifact@v2
