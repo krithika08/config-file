@@ -3,9 +3,12 @@
 name: Export Proxy
 
 on:
+  push:
+    paths:
+      - 'apiproxy.yaml'  # Trigger workflow on changes to apiproxy.yaml
   pull_request:
     paths:
-      - 'apiproxy.yaml'
+      - 'apiproxy.yaml'  # Trigger workflow when a pull request modifies apiproxy.yaml
 
 jobs:
   export_proxy:
