@@ -32,5 +32,8 @@ jobs:
             "https://api.enterprise.apigee.com/v1/organizations/{org_name}/apis/${API_NAME}/revisions/${REVISION}?format=bundle" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}"
 
-
-      
+      - name: Upload Proxy Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: proxy-config  # Name of the artifact
+          path: proxy-config.zip  # Path to the file(s) to upload
