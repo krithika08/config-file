@@ -22,8 +22,10 @@ jobs:
         run: |
           API_NAME=$(yq e '.proxy' apiproxy.yaml)
           REVISION=$(yq e '.revision' apiproxy.yaml)
+          ORG_NAME=$(yq e '.org' apiproxy.yaml) 
           echo "API_NAME=${API_NAME}" >> $GITHUB_ENV
           echo "REVISION=${REVISION}" >> $GITHUB_ENV
+          echo "ORG_NAME=${ORG_NAME}" >> $GITHUB_ENV
 
       - name: Export Proxy
         run: |
