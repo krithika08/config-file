@@ -31,7 +31,7 @@ jobs:
         run: |
           # Export the API proxy revision as a zip file
           curl -o proxy-config.zip \
-            "https://api.enterprise.apigee.com/v1/organizations/{org_name}/apis/${API_NAME}/revisions/${REVISION}?format=bundle" \
+            "https://api.enterprise.apigee.com/v1/organizations/${ORG_NAME}/apis/${API_NAME}/revisions/${REVISION}?format=bundle" \
             --header "Authorization: Bearer ${{ secrets.BEARER_TOKEN }}"
 
       - name: Upload Proxy Artifact
