@@ -1,0 +1,38 @@
+name: Import Proxy
+
+on:
+  push:
+    paths:
+      - 'apiproxy.yaml'  # Trigger workflow on changes to config file
+      - 'apiproxy/*'   # Trigger workflow on changes to files within apiproxy directory
+    branches:
+      - main
+
+jobs:
+  import_proxy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Read Proxy Configuration
+      id: read_config
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const fs = require('fs');
+          const yaml = require('js-yaml');
+          const config = yaml.safeLoad(fs.readFileSync('config.yaml', 'utf8'));
+          console.log(JSON.stringify(config));
+
+    - name: Create API bundle
+      run: zip -r proxy.zip apiproxy
+      
+    - name: Upload API Proxy Bundle
+      run: |
+        curl -X POST \
+        -H "Content-Type: multipart/form-data" \
+        -H "Authorization: Bearer ${{ secrets.PROD_APIGEE_BEARER_TOKEN }}" \
+        -F "file=@apiproxy.zip" \
+        "https://api.enterprise.apigee.com/v1/organizations/${{ steps.read_config.outputs.org }}/apis?action=import&name=${{ steps.read_config.outputs.api_name }}"
