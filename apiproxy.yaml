@@ -1,7 +1,7 @@
 proxy: "Savanna-API-Apigee-FinOps"  
 revision: "11" 
 env: "stage"  
-org: "zebra-prod" 
+org: "zebra-nonprod" 
 #optional fields for now...
 # kvm: ""  
 # targetName: ""  
